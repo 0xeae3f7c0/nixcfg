@@ -2,7 +2,7 @@
   imports = [
     ./hardware.nix
     ./local-packages.nix
-    ../../nixos/default.nix
+    ../../nixos/_imports.nix
 
     # Home Manager integration
     inputs.home-manager.nixosModules.home-manager

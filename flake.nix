@@ -11,25 +11,22 @@
   outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, ... }@inputs:
   let
     system = "x86_64-linux";
-    user = "james";
+    user = "0xeae3f7c0";
     homeStateVersion = "25.05";
 
     hosts = [
       { hostname = "desktop"; stateVersion = "25.05"; }
       { hostname = "laptop";  stateVersion = "25.05"; }
-      { hostname = "vm";      stateVersion = "25.05"; }
     ];
 
     makeSystem = { hostname, stateVersion }: 
       nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs stateVersion hostname user homeStateVersion; };
+        specialArgs = { inherit inputs hostname user homeStateVersion stateVersion; };
         modules = [
           ./hosts/${hostname}/configuration.nix
         ]
-        ++ (if hostname == "desktop" then [
-          inputs.lanzaboote.nixosModules.lanzaboote
-        ] else []);
+        ++ (if hostname == "desktop" then [ inputs.lanzaboote.nixosModules.lanzaboote] else []);
       };
   in {
     nixosConfigurations =
@@ -41,10 +38,5 @@
             };
           })
         {} hosts;
-
-    apps.x86_64-linux.vm = { 
-      type = "app"; 
-      program = "${self.nixosConfigurations.vm.config.system.build.vm}/bin/run-vm-host-vm"; 
-    };
   };
 }

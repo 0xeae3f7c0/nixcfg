@@ -2,8 +2,8 @@
   themeSrc = pkgs.fetchFromGitHub {
     owner = "rafaelmardojai";
     repo = "firefox-gnome-theme";
-    rev = "master";
-    sha256 = "KJjs4BdQ03X4jcc/aAcjO0PwHaYUYBAb6UIIL5fFslY=";
+    rev = "v141";
+    sha256 = "9veVYpPCwKNjIK5gOigl5nEUN6tmrSHXUv4bVZkRuOE=";
   };
 
 in {
