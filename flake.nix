@@ -5,16 +5,19 @@
     nixpkgs = { url = "github:NixOS/nixpkgs/nixos-25.05"; };
     home-manager = { url = "github:nix-community/home-manager/release-25.05"; inputs.nixpkgs.follows = "nixpkgs"; };
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    lanzaboote = { url = "github:nix-community/lanzaboote/v0.4.2"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = { self, nixpkgs, home-manager, spicetify-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, ... }@inputs:
   let
     system = "x86_64-linux";
     user = "james";
     homeStateVersion = "25.05";
 
     hosts = [
-      { hostname = "nixos"; stateVersion = "25.05"; }
+      { hostname = "desktop"; stateVersion = "25.05"; }
+      { hostname = "laptop";  stateVersion = "25.05"; }
+      { hostname = "vm";      stateVersion = "25.05"; }
     ];
 
     makeSystem = { hostname, stateVersion }: 
@@ -23,7 +26,10 @@
         specialArgs = { inherit inputs stateVersion hostname user homeStateVersion; };
         modules = [
           ./hosts/${hostname}/configuration.nix
-        ];
+        ]
+        ++ (if hostname == "desktop" then [
+          inputs.lanzaboote.nixosModules.lanzaboote
+        ] else []);
       };
   in {
     nixosConfigurations =
@@ -35,5 +41,10 @@
             };
           })
         {} hosts;
+
+    apps.x86_64-linux.vm = { 
+      type = "app"; 
+      program = "${self.nixosConfigurations.vm.config.system.build.vm}/bin/run-vm-host-vm"; 
+    };
   };
 }

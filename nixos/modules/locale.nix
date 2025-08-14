@@ -1,4 +1,8 @@
-{
+{ hostname, ... }: let
+  options =
+    if hostname == "laptop" then "apple:badmap"
+    else "";
+in {
   i18n.defaultLocale = "en_GB.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -14,4 +18,9 @@
   };
 
   console.keyMap = "uk";
+
+  services.xserver.xkb = {
+    layout = "gb";
+    options = options;
+  };
 }

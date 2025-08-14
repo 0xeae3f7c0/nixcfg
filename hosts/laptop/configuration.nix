@@ -1,8 +1,8 @@
 { stateVersion, hostname, inputs, user, homeStateVersion, ... }: {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware.nix
     ./local-packages.nix
-    ../../nixos/modules
+    ../../nixos/default.nix
 
     # Home Manager integration
     inputs.home-manager.nixosModules.home-manager
@@ -21,6 +21,15 @@
       ];
     };
   };
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+  systemd.extraConfig = ''
+    DefaultTimeoutStopSec=15s
+  '';
 
   networking.hostName = hostname;
   system.stateVersion = stateVersion;

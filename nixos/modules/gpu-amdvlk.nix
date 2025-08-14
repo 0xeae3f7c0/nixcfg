@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
+{ config, lib, pkgs, ... }: 
+
+lib.mkIf config.features.gpu.enableAmdVulkan {
   hardware.graphics = {
     enable = true;
     enable32Bit = true;

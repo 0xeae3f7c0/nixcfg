@@ -33,5 +33,7 @@
     };
   };
 
+  features.gpu.enableAmdVulkan = true;
+
   xdg.icons.fallbackCursorThemes = [ "Adwaita" ];
 }
