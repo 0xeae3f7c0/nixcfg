@@ -11,32 +11,17 @@
   outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, ... }@inputs:
   let
     system = "x86_64-linux";
-    user = "0xeae3f7c0";
-    homeStateVersion = "25.05";
+    hostMeta = import ./hosts/metadata.nix;
 
-    hosts = [
-      { hostname = "desktop"; stateVersion = "25.05"; }
-      { hostname = "laptop";  stateVersion = "25.05"; }
-    ];
-
-    makeSystem = { hostname, stateVersion }: 
+    makeSystem = name: meta:
       nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs hostname user homeStateVersion stateVersion; };
-        modules = [
-          ./hosts/${hostname}/configuration.nix
-        ]
-        ++ (if hostname == "desktop" then [ inputs.lanzaboote.nixosModules.lanzaboote] else []);
+        specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote; }; };
+        modules =
+          [ ./hosts/${name}/configuration.nix ]
+          ++ (if name == "desktop" then [ lanzaboote.nixosModules.lanzaboote ] else []);
       };
   in {
-    nixosConfigurations =
-      nixpkgs.lib.foldl'
-        (configs: host:
-          configs // {
-            "${host.hostname}" = makeSystem {
-              inherit (host) hostname stateVersion;
-            };
-          })
-        {} hosts;
+    nixosConfigurations = nixpkgs.lib.mapAttrs makeSystem hostMeta;
   };
 }
