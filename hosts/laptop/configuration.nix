@@ -6,6 +6,10 @@
 
     # Home Manager integration
     inputs.home-manager.nixosModules.home-manager
+
+    # Model‑specific hardware configuration for MacBook Pro 11,1 (Retina 13" Late 2013)
+    # Includes kernel params, drivers (Broadcom wl), and quirks tuned for this hardware
+    inputs.nixos-hardware.nixosModules.apple-macbook-pro-11-1
   ];
 
   home-manager = {
@@ -26,6 +30,13 @@
     "nix-command"
     "flakes"
   ];
+
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [
+      "broadcom-sta-6.30.223.271-57-6.16"
+    ];
+  };
 
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=15s
