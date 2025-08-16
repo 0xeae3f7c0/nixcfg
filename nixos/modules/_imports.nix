@@ -2,6 +2,7 @@
   imports = [
     ./audio.nix
     ./boot.nix
+    ./desktop-gnome.nix
     ./features.nix
     ./gnupg.nix
     ./gpu-amdvlk.nix
