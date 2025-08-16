@@ -19,7 +19,7 @@
         inherit system;
         specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware; }; };
         modules =
-          [ ./hosts/${name}/configuration.nix ]
+          [ ./nixos/_imports.nix ./hosts/${name}/configuration.nix ]
           ++ (if name == "desktop" then [ lanzaboote.nixosModules.lanzaboote ] else []);
       };
   in {
