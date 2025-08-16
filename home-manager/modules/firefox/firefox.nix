@@ -17,7 +17,7 @@ in {
       # Load GNOME theme CSS and apply our overrides
       userChrome = ''
         @import "firefox-gnome-theme/userChrome.css";
-      '' + (import ./overrides.userChrome.nix);
+      '' + builtins.readFile ./overrides.userChrome.css;
 
       userContent = ''
         @import "firefox-gnome-theme/userContent.css";
