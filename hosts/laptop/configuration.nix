@@ -14,7 +14,7 @@
   home-manager = {
     # Forward flake args into the Home Manager module evaluation
     extraSpecialArgs = {
-      inherit inputs user homeStateVersion;
+      inherit inputs user homeStateVersion hostname;
       spicetify-nix = inputs.spicetify-nix;
     };
 

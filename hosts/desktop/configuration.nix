@@ -9,7 +9,7 @@
 
   home-manager = {
     extraSpecialArgs = {
-      inherit inputs user homeStateVersion;
+      inherit inputs user homeStateVersion hostname;
       spicetify-nix = inputs.spicetify-nix;
     };
 
