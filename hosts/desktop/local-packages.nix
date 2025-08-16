@@ -4,6 +4,17 @@
   # Host‑specific packages
   environment.systemPackages = with pkgs; [
     gamemode
+
+    # Game launchers / runtimes
+    lutris
+    protonplus
+
+    # Overlays & HUDs
+    mangohud
+    mangojuice
+
+    # Compositor for gaming
+    gamescope
   ];
 
   programs.steam = {
