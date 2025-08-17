@@ -20,7 +20,19 @@
     # Security & Encryption
     gnupg
     pinentry-gnome3
+    sbctl
+
+    # Utilities
+    nautilus-open-any-terminal
+    unzip
   ];
+
+  environment.gnome.excludePackages = [ pkgs.gnome-console ];
+
+  programs.nautilus-open-any-terminal = {
+    enable = true;
+    terminal = "ptyxis";
+  };
 
   # Ensure Flathub repo is available
   systemd.services.flatpak-repo = {
