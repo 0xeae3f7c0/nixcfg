@@ -1,8 +1,8 @@
-{ pkgs, hostname, ... }: {
+{ pkgs, hostname, lib, ... }: {
   boot = {
     loader = {
       systemd-boot = {
-        enable = hostname != "desktop";
+        enable = lib.mkDefault (hostname != "desktop");
         consoleMode = "max";
       };
       efi.canTouchEfiVariables = true;
