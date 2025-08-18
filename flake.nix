@@ -7,9 +7,10 @@
     spicetify-nix = { url = "github:Gerg-L/spicetify-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     lanzaboote = { url = "github:nix-community/lanzaboote/v0.4.2"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; inputs.nixpkgs.follows = "nixpkgs"; };
+    sops-nix = { url = "github:Mic92/sops-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, nixos-hardware, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, nixos-hardware, sops-nix, ... }@inputs:
   let
     system = "x86_64-linux";
     hostMeta = import ./hosts/metadata.nix;
@@ -17,7 +18,7 @@
     makeSystem = name: meta:
       nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware; }; };
+        specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware sops-nix; }; };
         modules =
           [ ./nixos/_imports.nix ./hosts/${name}/configuration.nix ]
           ++ (if name == "desktop" then [ lanzaboote.nixosModules.lanzaboote ] else []);

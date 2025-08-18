@@ -9,7 +9,7 @@
     # Model‑specific hardware configuration for MacBook Pro 11,1 (Retina 13" Late 2013)
     # Includes kernel params, drivers (Broadcom wl), and quirks tuned for this hardware
     inputs.nixos-hardware.nixosModules.apple-macbook-pro-11-1
-  ];
+  ] ++ (if builtins.pathExists ./secrets/secrets.nix then [ ./secrets/secrets.nix ] else []);
 
   home-manager = {
     # Forward flake args into the Home Manager module evaluation

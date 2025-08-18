@@ -5,7 +5,7 @@
 
     # Home Manager integration
     inputs.home-manager.nixosModules.home-manager
-  ];
+  ] ++ (if builtins.pathExists ./secrets/secrets.nix then [ ./secrets/secrets.nix ] else []);
 
   home-manager = {
     extraSpecialArgs = {
