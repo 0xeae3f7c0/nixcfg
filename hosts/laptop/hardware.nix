@@ -19,8 +19,6 @@
     { device = "/dev/disk/by-label/swap"; }
   ];
 
-  networking.useDHCP = lib.mkDefault true;
-
   nixpkgs.hostPlatform.system = "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = true;
 }
