@@ -37,6 +37,10 @@
     ];
   };
 
+  environment.variables = {
+    GSK_RENDERER = "ngl";
+  };
+
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=15s
   '';
