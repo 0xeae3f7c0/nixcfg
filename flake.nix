@@ -12,15 +12,14 @@
 
   outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, nixos-hardware, sops-nix, ... }@inputs:
   let
-    system = "x86_64-linux";
     hostMeta = import ./hosts/metadata.nix;
 
     makeSystem = name: meta:
       nixpkgs.lib.nixosSystem {
-        inherit system;
+        system = meta.system;
         specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware sops-nix; }; };
         modules =
-          (import ./nixos/base-modules.nix { inherit home-manager; })
+          (import ./nixos/base-modules.nix { inherit home-manager meta; })
           ++ [ ./hosts/${name}/configuration.nix ]
           ++ (if name == "desktop" then [ lanzaboote.nixosModules.lanzaboote ] else []);
       };
