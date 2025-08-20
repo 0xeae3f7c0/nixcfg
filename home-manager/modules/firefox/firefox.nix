@@ -1,59 +1,81 @@
-{ pkgs, ... }: let
+{ config, pkgs, lib, inputs ? {}, ... }:
+
+let
+  system = pkgs.system;
+  nightlyProfileName = "nightly-profile";
+
+  # Is the flake input provided, and does it have a build for this system?
+  hasNightlyInput = inputs ? firefox-nightly;
+  hasNightlyForSystem =
+    hasNightlyInput && builtins.hasAttr system inputs.firefox-nightly.packages;
+
   themeSrc = pkgs.fetchFromGitHub {
     owner = "rafaelmardojai";
     repo = "firefox-gnome-theme";
     rev = "v141";
     sha256 = "9veVYpPCwKNjIK5gOigl5nEUN6tmrSHXUv4bVZkRuOE=";
   };
-
-in {
+in
+{
   programs.firefox = {
     enable = true;
 
-    profiles.default-release = {
-      isDefault = true;
-      id = 0;
+    # Firefox profile
+    profiles = {
+      default-release = {
+        isDefault = true;
+        id = 0;
 
-      # Load GNOME theme CSS and apply our overrides
-      userChrome = ''
-        @import "firefox-gnome-theme/userChrome.css";
-      '' + builtins.readFile ./overrides.userChrome.css;
+        userChrome = ''
+          @import "firefox-gnome-theme/userChrome.css";
+        '' + builtins.readFile ./overrides.userChrome.css;
 
-      userContent = ''
-        @import "firefox-gnome-theme/userContent.css";
-      '';
+        userContent = ''
+          @import "firefox-gnome-theme/userContent.css";
+        '';
 
-      settings = {
-        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        "svg.context-properties.content.enabled" = true;
-        "browser.tabs.drawInTitlebar" = true;
-        "gnomeTheme.hideSingleTab" = false;
-        "gnomeTheme.oledBlack" = false;
+        settings = {
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "svg.context-properties.content.enabled" = true;
+          "browser.tabs.drawInTitlebar" = true;
+          "gnomeTheme.hideSingleTab" = false;
+          "gnomeTheme.oledBlack" = false;
+        };
+      };
+    }
+    # Conditionally add the Nightly profile
+    // lib.optionalAttrs hasNightlyForSystem {
+      ${nightlyProfileName} = {
+        id = 1;
+        settings = {
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "svg.context-properties.content.enabled" = true;
+          "browser.tabs.drawInTitlebar" = true;
+        };
       };
     };
   };
 
+  # Theme files for the stable profile
   home.file = {
-    # Place the theme in Firefox's chrome directory
-    ".mozilla/firefox/default-release/chrome/firefox-gnome-theme" = {
-      source = themeSrc;
-    };
-
-    # Override default desktop entry to improve GNOME integration
-    ".local/share/applications/firefox.desktop".text = ''
+    ".mozilla/firefox/default-release/chrome/firefox-gnome-theme".source = themeSrc;
+  }
+  # Conditionally add the Nightly launcher so it always uses its own profile
+  // lib.optionalAttrs hasNightlyForSystem {
+    ".local/share/applications/firefox-nightly.desktop".text = ''
       [Desktop Entry]
-        Name=Firefox
-        Exec=firefox %u
-        Icon=firefox
-        Type=Application
-        Categories=GNOME;GTK;Network;WebBrowser;
-        MimeType=x-scheme-handler/http;x-scheme-handler/https;
-        StartupNotify=true
-        Terminal=false
+      Name=Firefox Nightly
+      Exec=firefox-nightly --no-remote --P ${nightlyProfileName} %u
+      Icon=firefox-nightly
+      Type=Application
+      Categories=Network;WebBrowser;
+      MimeType=text/html;text/xml;
+      StartupNotify=true
+      Terminal=false
     '';
   };
 
-  # Ensure Firefox is default for web content
+  # Default browser bindings
   xdg.mimeApps.defaultApplications = {
     "text/html"              = [ "firefox.desktop" ];
     "text/xml"               = [ "firefox.desktop" ];

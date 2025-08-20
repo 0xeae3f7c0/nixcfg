@@ -8,16 +8,17 @@
     lanzaboote = { url = "github:nix-community/lanzaboote/v0.4.2"; inputs.nixpkgs.follows = "nixpkgs"; };
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; inputs.nixpkgs.follows = "nixpkgs"; };
     sops-nix = { url = "github:Mic92/sops-nix"; inputs.nixpkgs.follows = "nixpkgs"; };
+    firefox-nightly = { url = "github:nix-community/flake-firefox-nightly"; inputs.nixpkgs.follows = "nixpkgs"; };
   };
 
-  outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, nixos-hardware, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, spicetify-nix, lanzaboote, nixos-hardware, sops-nix, firefox-nightly, ... }@inputs:
   let
     hostMeta = import ./hosts/metadata.nix;
 
     makeSystem = name: meta:
       nixpkgs.lib.nixosSystem {
         system = meta.system;
-        specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware sops-nix; }; };
+        specialArgs = meta // { inputs = { inherit home-manager spicetify-nix lanzaboote nixos-hardware sops-nix firefox-nightly; }; };
         modules =
           (import ./nixos/base-modules.nix { inherit home-manager meta; })
           ++ [ ./hosts/${name}/configuration.nix ]
