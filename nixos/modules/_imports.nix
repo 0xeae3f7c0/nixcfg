@@ -6,6 +6,7 @@
     ./features.nix
     ./gnupg.nix
     ./gpu-amdvlk.nix
+    ./home-manager.nix
     ./locale.nix
     ./maintenance.nix
     ./networking.nix

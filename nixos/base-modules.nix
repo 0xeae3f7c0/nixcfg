@@ -1,5 +1,4 @@
-{ inputs }: [
+{ home-manager }: [
   ./_imports.nix
-  inputs.home-manager.nixosModules.home-manager
-  ./nixos/home-manager-config.nix
+  home-manager.nixosModules.home-manager
 ]
