@@ -45,6 +45,23 @@
     DefaultTimeoutStopSec=15s
   '';
 
+  services.mbpfan = {
+    enable = true;
+    settings = {
+      general = {
+        low_temp  = 78; # °C — stay quiet under light load
+        high_temp = 88; # °C — begin serious ramp‑up
+        max_temp  = 94; # °C — trigger full speed before throttling
+
+        polling_interval = 1;
+
+        # Fan limits (typical for 13" Retina)
+        min_fan_speed = 2000; # RPM — matches Apple’s idle baseline
+        max_fan_speed = 6200; # RPM — close to hardware max
+      };
+    };
+  };
+
   networking.hostName = hostname;
   system.stateVersion = stateVersion;
 }

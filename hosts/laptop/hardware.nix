@@ -1,7 +1,8 @@
 { lib, ... }: {
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-intel" "coretemp" ];
+    kernelParams = [ "applesmc.fan_control=1" ];
   };
 
   fileSystems."/boot" = {
