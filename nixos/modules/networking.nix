@@ -4,8 +4,13 @@
     networkmanager.enable = true;
     firewall.enable = true;
     useDHCP = lib.mkDefault true;
-    interfaces.wlp10s0.useDHCP = lib.mkIf (hostname == "desktop") true;
+
+    interfaces = lib.mkIf (hostname == "desktop") {
+      wlp10s0.useDHCP = true;
+    };
   };
 
-  hardware.enableRedistributableFirmware = lib.mkIf (hostname == "desktop") true;
+  hardware = lib.mkIf (hostname == "desktop") {
+    enableRedistributableFirmware = true;
+  };
 }
